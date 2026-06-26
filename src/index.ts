@@ -1,10 +1,15 @@
 import express from 'express';
 import { sql } from 'drizzle-orm';
-import mahasiswaRoutes from './routes/mahasiswaRoutes.js';
+// import cors from 'cors';
+
 import { db } from './db/index.js';
+// import { errorHandler } from './middlewares/errorHandler.js';
+import guruRoutes from './routes/guruRoutes.js';
 
 const app = express();
+
 app.use(express.json());
+// app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/health', async (_req, res) => {
@@ -16,7 +21,11 @@ app.get('/health', async (_req, res) => {
   }
 });
 
-app.use('/mahasiswa', mahasiswaRoutes);
+// Routes
+app.use('/guru', guruRoutes);
+
+// Error Handler
+// app.use(errorHandler);
 
 app.listen(3000, () => {
   console.log('Server berjalan di http://localhost:3000');
