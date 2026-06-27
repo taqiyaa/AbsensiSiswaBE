@@ -1,0 +1,1 @@
+ALTER TABLE `siswa` MODIFY COLUMN `nis_siswa` varchar(20) NOT NULL;

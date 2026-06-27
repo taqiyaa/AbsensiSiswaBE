@@ -6,7 +6,7 @@ import { db } from './db/index.js';
 // import { errorHandler } from './middlewares/errorHandler.js';
 import guruRoutes from './routes/guruRoutes.js';
 import kelasRoutes from './routes/kelasRoutes.js';
-
+import siswaRoutes from './routes/siswaRoutes.js';
 
 const app = express();
 
@@ -26,6 +26,7 @@ app.get('/health', async (_req, res) => {
 // Routes
 app.use('/guru', guruRoutes);
 app.use('/kelas', kelasRoutes);
+app.use('/siswa', siswaRoutes);
 
 // Error Handler
 // app.use(errorHandler);
