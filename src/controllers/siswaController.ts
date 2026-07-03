@@ -15,9 +15,7 @@ import {
 import { db } from '../db/index.js';
 import { siswa } from '../db/siswa.js';
 
-// ==========================================
-// 1. GET ALL SISWA (DENGAN PAGINASI & SEARCH)
-// ==========================================
+
 export async function getAllSiswa(
   req: Request,
   res: Response,
@@ -72,9 +70,7 @@ export async function getAllSiswa(
   }
 }
 
-// ==========================================
-// 2. CREATE SISWA (TAMBAH DATA BARU)
-// ==========================================
+
 export async function createSiswa(
   req: Request,
   res: Response,
@@ -115,9 +111,7 @@ export async function createSiswa(
   }
 }
 
-// ==========================================
-// 3. UPDATE SISWA (UBAH DATA BERDASARKAN ID)
-// ==========================================
+
 export async function updateSiswa(
   req: Request,
   res: Response,
@@ -163,9 +157,7 @@ export async function updateSiswa(
   }
 }
 
-// ==========================================
-// 4. DELETE SISWA (HAPUS DATA BERDASARKAN ID)
-// ==========================================
+
 export async function deleteSiswa(
   req: Request,
   res: Response,

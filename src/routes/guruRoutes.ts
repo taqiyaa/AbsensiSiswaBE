@@ -7,18 +7,13 @@ import {
   deleteGuru
 } from '../controllers/guruController.js';
 
+import { authenticateToken } from '../middleware/authMiddleware.js';
+
 const router = Router();
 
-// Menampilkan semua guru (GET)
-router.get('/', getAllGuru);
-
-// Tambah guru baru (POST)
-router.post('/', createGuru);
-
-// Ubah data guru berdasarkan ID (PUT)
-router.put('/:id', updateGuru);
-
-// Hapus guru berdasarkan ID (DELETE)
-router.delete('/:id', deleteGuru);
+router.get('/', authenticateToken, getAllGuru);
+router.post('/', authenticateToken, createGuru);
+router.put('/:id', authenticateToken, updateGuru);
+router.delete('/:id', authenticateToken, deleteGuru);
 
 export default router;

@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt';
 import type {
   Request,
   Response,
@@ -15,9 +16,7 @@ import {
 import { db } from '../db/index.js';
 import { guru } from '../db/guru.js';
 
-// ==========================================
-// 1. GET ALL GURU (DENGAN PAGINASI & SEARCH)
-// ==========================================
+
 export async function getAllGuru(
   req: Request,
   res: Response,
@@ -71,9 +70,7 @@ export async function getAllGuru(
   }
 }
 
-// ==========================================
-// 2. CREATE GURU (TAMBAH DATA BARU)
-// ==========================================
+
 export async function createGuru(
   req: Request,
   res: Response,
@@ -93,10 +90,12 @@ export async function createGuru(
       });
     }
 
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     await db.insert(guru).values({
       namaGuru,
       npmGuru,
-      password,
+      password: hashedPassword,
       email
     });
 
@@ -109,9 +108,7 @@ export async function createGuru(
   }
 }
 
-// ==========================================
-// 3. UPDATE GURU (UBAH DATA BERDASARKAN ID)
-// ==========================================
+
 export async function updateGuru(
   req: Request,
   res: Response,
@@ -133,12 +130,13 @@ export async function updateGuru(
       });
     }
 
+    const hashedPassword = await bcrypt.hash(password, 10);
     await db
       .update(guru)
       .set({
         namaGuru,
         npmGuru,
-        password,
+        password: hashedPassword,
         email
       })
       .where(eq(guru.id, id));
@@ -152,9 +150,7 @@ export async function updateGuru(
   }
 }
 
-// ==========================================
-// 4. DELETE GURU (HAPUS DATA BERDASARKAN ID)
-// ==========================================
+
 export async function deleteGuru(
   req: Request,
   res: Response,

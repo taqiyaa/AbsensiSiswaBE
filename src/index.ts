@@ -1,13 +1,14 @@
+
 import express from 'express';
 import { sql } from 'drizzle-orm';
 // import cors from 'cors';
 
 import { db } from './db/index.js';
-// import { errorHandler } from './middlewares/errorHandler.js';
 import guruRoutes from './routes/guruRoutes.js';
 import kelasRoutes from './routes/kelasRoutes.js';
 import siswaRoutes from './routes/siswaRoutes.js';
 import absensiRoutes from './routes/absensiRoutes.js';
+import authRoutes from './routes/authRoutes.js';
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.use('/guru', guruRoutes);
 app.use('/kelas', kelasRoutes);
 app.use('/siswa', siswaRoutes);
 app.use('/absensi', absensiRoutes);
+app.use('/auth', authRoutes);
 
 // Error Handler
 // app.use(errorHandler);

@@ -15,9 +15,7 @@ import {
 import { db } from '../db/index.js';
 import { kelas } from '../db/kelas.js';
 
-// ==========================================
-// 1. GET ALL KELAS (DENGAN PAGINASI & SEARCH)
-// ==========================================
+
 export async function getAllKelas(
   req: Request,
   res: Response,
@@ -69,9 +67,7 @@ export async function getAllKelas(
   }
 }
 
-// ==========================================
-// 2. CREATE KELAS (TAMBAH DATA BARU)
-// ==========================================
+
 export async function createKelas(
   req: Request,
   res: Response,
@@ -99,9 +95,7 @@ export async function createKelas(
   }
 }
 
-// ==========================================
-// 3. UPDATE KELAS (UBAH DATA BERDASARKAN ID)
-// ==========================================
+
 export async function updateKelas(
   req: Request,
   res: Response,
@@ -134,9 +128,7 @@ export async function updateKelas(
   }
 }
 
-// ==========================================
-// 4. DELETE KELAS (HAPUS DATA BERDASARKAN ID)
-// ==========================================
+
 export async function deleteKelas(
   req: Request,
   res: Response,

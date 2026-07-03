@@ -7,18 +7,13 @@ import {
   deleteSiswa
 } from '../controllers/siswaController.js';
 
+import { authenticateToken } from "../middleware/authMiddleware.js";
+
 const router = Router();
 
-// Menampilkan semua siswa (GET)
-router.get('/', getAllSiswa);
-
-// Tambah siswa baru (POST)
-router.post('/', createSiswa);
-
-// Mengubah data siswa berdasarkan ID (PUT)
-router.put('/:id', updateSiswa);
-
-// Menghapus data siswa berdasarkan ID (DELETE)
-router.delete('/:id', deleteSiswa);
+router.get('/',authenticateToken, getAllSiswa);
+router.post('/', authenticateToken, createSiswa);
+router.put('/:id', authenticateToken, updateSiswa);
+router.delete('/:id', authenticateToken, deleteSiswa);
 
 export default router;

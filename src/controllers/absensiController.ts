@@ -15,7 +15,7 @@ import {
 import { db } from '../db/index.js';
 import { absensi } from '../db/absensi.js';
 
-// 1. GET ALL ABSENSI (DENGAN PAGINASI & SEARCH)
+
 export async function getAllAbsensi(
   req: Request,
   res: Response,
@@ -70,7 +70,7 @@ export async function getAllAbsensi(
   }
 }
 
-// 2. CREATE ABSENSI
+
 export async function createAbsensi(
   req: Request,
   res: Response,
@@ -111,7 +111,7 @@ export async function createAbsensi(
   }
 }
 
-// 3. UPDATE ABSENSI (UBAH DATA BERDASARKAN ID)
+
 export async function updateAbsensi(
   req: Request,
   res: Response,
@@ -157,7 +157,7 @@ export async function updateAbsensi(
   }
 }
 
-// 4. DELETE ABSENSI (HAPUS DATA BERDASARKAN ID)
+
 export async function deleteAbsensi(
   req: Request,
   res: Response,

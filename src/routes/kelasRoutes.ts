@@ -7,15 +7,13 @@ import {
     deleteKelas
 } from '../controllers/kelasController.js';
 
+import { authenticateToken } from "../middleware/authMiddleware.js";
+
 const router = Router();
 
-//menampilkan semua kelas (GET)
-router.get('/',getAllKelas);
-//tambah kelas baru (POST)
-router.post('/',createKelas);
-//mengubah data berdasarkan id (PUT)
-router.put('/',updateKelas);
-//menghapus data kelas berdasarkan id (DELETE)
-router.delete('/',deleteKelas);
+router.get('/',authenticateToken, getAllKelas);
+router.post('/',authenticateToken, createKelas);
+router.put('/',authenticateToken, updateKelas);
+router.delete('/',authenticateToken, deleteKelas);
 
 export default router;
