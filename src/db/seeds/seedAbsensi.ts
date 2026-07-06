@@ -4,37 +4,37 @@ import { absensi } from '../absensi.js';
 async function seedAbsensi() {
   await db.insert(absensi as any).values([
     {
-      siswaId: 1,
+      siswaId: 9,
       guruId: 1,
       tanggal: '2026-06-28',
       status: 'Hadir'
     },
     {
-      siswaId: 2,
+      siswaId:10,
       guruId: 1,
       tanggal: '2026-06-28',
       status: 'Izin'
     },
     {
-      siswaId: 3,
+      siswaId: 11,
       guruId: 2,
       tanggal: '2026-06-28',
       status: 'Sakit'
     },
     {
-      siswaId: 4,
+      siswaId: 12,
       guruId: 2,
       tanggal: '2026-06-28',
       status: 'Alpha'
     },
     {
-      siswaId: 5,
+      siswaId: 13,
       guruId: 3,
       tanggal: '2026-06-28',
       status: 'Hadir'
     },
     {
-      siswaId: 6,
+      siswaId: 14,
       guruId: 3,
       tanggal: '2026-06-28',
       status: 'Hadir'
@@ -50,3 +50,4 @@ seedAbsensi()
     console.error('Seeder gagal:', error);
     process.exit(1);
   });
+  

@@ -7,7 +7,7 @@ import {
     deleteKelas
 } from '../controllers/kelasController.js';
 
-import { authenticateToken } from "../middleware/authMiddleware.js";
+import { authenticateToken } from "../middlewares/authMiddleware.js";
 
 const router = Router();
 

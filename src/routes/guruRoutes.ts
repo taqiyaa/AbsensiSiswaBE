@@ -7,7 +7,7 @@ import {
   deleteGuru
 } from '../controllers/guruController.js';
 
-import { authenticateToken } from '../middleware/authMiddleware.js';
+import { authenticateToken } from '../middlewares/authMiddleware.js';
 
 const router = Router();
 
