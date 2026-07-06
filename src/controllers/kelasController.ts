@@ -128,7 +128,6 @@ export async function updateKelas(
   }
 }
 
-
 export async function deleteKelas(
   req: Request,
   res: Response,
