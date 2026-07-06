@@ -13,7 +13,7 @@ const router = Router();
 
 router.get('/',authenticateToken, getAllKelas);
 router.post('/',authenticateToken, createKelas);
-router.put('/',authenticateToken, updateKelas);
-router.delete('/',authenticateToken, deleteKelas);
+router.put('/:id',authenticateToken, updateKelas);
+router.delete('/:id',authenticateToken, deleteKelas);
 
 export default router;
