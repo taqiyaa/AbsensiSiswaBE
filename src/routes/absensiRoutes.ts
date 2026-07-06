@@ -7,7 +7,7 @@ import {
     deleteAbsensi
 } from '../controllers/absensiController.js';
 
-import { authenticateToken } from "../middleware/authMiddleware.js";
+import { authenticateToken } from "../middlewares/authMiddleware.js";
 
 const router = Router();
 

@@ -7,7 +7,7 @@ import {
   deleteSiswa
 } from '../controllers/siswaController.js';
 
-import { authenticateToken } from "../middleware/authMiddleware.js";
+import { authenticateToken } from "../middlewares/authMiddleware.js";
 
 const router = Router();
 

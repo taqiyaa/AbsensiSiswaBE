@@ -9,7 +9,7 @@ import kelasRoutes from './routes/kelasRoutes.js';
 import siswaRoutes from './routes/siswaRoutes.js';
 import absensiRoutes from './routes/absensiRoutes.js';
 import authRoutes from './routes/authRoutes.js';
-
+import { errorHandler } from './middlewares/errorHandler.js';
 const app = express();
 
 app.use(express.json());
@@ -32,8 +32,7 @@ app.use('/siswa', siswaRoutes);
 app.use('/absensi', absensiRoutes);
 app.use('/auth', authRoutes);
 
-// Error Handler
-// app.use(errorHandler);
+app.use(errorHandler);
 
 app.listen(3000, () => {
   console.log('Server berjalan di http://localhost:3000');
