@@ -14,6 +14,7 @@ import {
 
 import { db } from '../db/index.js';
 import { siswa } from '../db/siswa.js';
+import { absensi } from '../db/absensi.js';
 
 
 export async function getAllSiswa(
@@ -165,6 +166,18 @@ export async function deleteSiswa(
 ) {
   try {
     const id = Number(req.params.id);
+
+    const dataAbsensi = await db
+      .select()
+      .from(absensi)
+      .where(eq(absensi.siswaId,id));
+
+    if (dataAbsensi.length > 0){
+      return res.status(400).json({
+        message:
+          'Data siswa tidak dapat dihapus karena masih memiliki data absensi'
+      });
+    }
 
     await db
       .delete(siswa)

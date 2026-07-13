@@ -1,6 +1,7 @@
 
 import express from 'express';
 import { sql } from 'drizzle-orm';
+// import {cors} from '$node_modules/cors';
 import cors from 'cors';
 
 import { db } from './db/index.js';
