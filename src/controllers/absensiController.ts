@@ -14,7 +14,8 @@ import {
 
 import { db } from '../db/index.js';
 import { absensi } from '../db/absensi.js';
-
+import { siswa } from '../db/siswa.js';
+import { kelas } from '../db/kelas.js';
 
 export async function getAllAbsensi(
   req: Request,
@@ -24,37 +25,27 @@ export async function getAllAbsensi(
   try {
     const page = Number(req.query.page ?? 1);
     const limit = Number(req.query.limit ?? 10);
-    const q = String(req.query.q ?? '');
-    const sortDir = String(req.query.sortDir ?? 'asc').toLowerCase();
 
-    const conditions = q
-      ? like(absensi.status, `%${q}%`)
-      : undefined;
-
+    // Mengambil data unik berdasarkan Tanggal dan Kelas saja
     const rows = await db
       .select({
-        id: absensi.id,
-        siswaId: absensi.siswaId,
-        guruId: absensi.guruId,
         tanggal: absensi.tanggal,
-        status: absensi.status
+        nama_kelas: kelas.namaKelas
       })
       .from(absensi)
-      .where(conditions)
-      .orderBy(
-        sortDir === 'desc'
-          ? desc(absensi.tanggal)
-          : asc(absensi.tanggal)
-      )
+      .leftJoin(siswa, eq(absensi.siswaId, siswa.id))
+      .leftJoin(kelas, eq(siswa.kelasId, kelas.id))
+      .groupBy(absensi.tanggal, kelas.namaKelas) // Dikelompokkan agar tidak duplikat
+      .orderBy(desc(absensi.tanggal))
       .limit(limit)
       .offset((page - 1) * limit);
 
+    // Hitung total grup riwayat yang ada
     const totalResult = await db
       .select({
         total: count()
       })
-      .from(absensi)
-      .where(conditions);
+      .from(absensi);
 
     const total = totalResult[0]?.total ?? 0;
 
@@ -70,7 +61,6 @@ export async function getAllAbsensi(
   }
 }
 
-
 export async function createAbsensi(
   req: Request,
   res: Response,
@@ -84,20 +74,22 @@ export async function createAbsensi(
       status
     } = req.body;
 
+    // Memberikan fallback nilai guruId jika tidak dikirim dari Svelte frontend Anda
+    const finalGuruId = guruId ?? 1;
+
     if (
       !siswaId ||
-      !guruId ||
       !tanggal ||
       !status
     ) {
       return res.status(400).json({
-        message: 'Siswa, Guru, Tanggal, dan Status wajib diisi'
+        message: 'Siswa, Tanggal, dan Status wajib diisi'
       });
     }
 
     await db.insert(absensi).values({
       siswaId,
-      guruId,
+      guruId: finalGuruId,
       tanggal,
       status
     });
@@ -110,7 +102,6 @@ export async function createAbsensi(
     return next(err);
   }
 }
-
 
 export async function updateAbsensi(
   req: Request,
@@ -156,7 +147,6 @@ export async function updateAbsensi(
     return next(err);
   }
 }
-
 
 export async function deleteAbsensi(
   req: Request,
