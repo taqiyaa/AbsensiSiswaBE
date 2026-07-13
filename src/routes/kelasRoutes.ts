@@ -11,7 +11,7 @@ import { authenticateToken } from "../middlewares/authMiddleware.js";
 
 const router = Router();
 
-router.get('/',authenticateToken, getAllKelas);
+router.get('/', getAllKelas);
 router.post('/',authenticateToken, createKelas);
 router.put('/:id',authenticateToken, updateKelas);
 router.delete('/:id',authenticateToken, deleteKelas);

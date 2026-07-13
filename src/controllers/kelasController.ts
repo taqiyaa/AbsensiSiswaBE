@@ -1,150 +1,206 @@
-import type {
-  Request,
-  Response,
-  NextFunction
-} from 'express';
+import type { Request, Response, NextFunction } from 'express';
 
 import {
-  asc,
-  desc,
-  like,
-  count,
-  eq
+	eq,
+	asc,
+	desc,
+	like,
+	count
 } from 'drizzle-orm';
 
 import { db } from '../db/index.js';
 import { kelas } from '../db/kelas.js';
+import { guru } from '../db/guru.js';
 
+/* ===========================
+   GET ALL
+=========================== */
 
 export async function getAllKelas(
-  req: Request,
-  res: Response,
-  next: NextFunction
+	req: Request,
+	res: Response,
+	next: NextFunction
 ) {
-  try {
-    const page = Number(req.query.page ?? 1);
-    const limit = Number(req.query.limit ?? 10);
-    const q = String(req.query.q ?? '');
-    const sortDir = String(req.query.sortDir ?? 'asc').toLowerCase();
+	try {
+		const page = Number(req.query.page ?? 1);
+		const limit = Number(req.query.limit ?? 10);
+		const q = String(req.query.q ?? '');
+		const sortDir = String(req.query.sortDir ?? 'asc');
 
-    const conditions = q
-      ? like(kelas.namaKelas, `%${q}%`)
-      : undefined;
+    const rows = q
+	? await db
+			.select({
+				id: kelas.id,
+				namaKelas: kelas.namaKelas,
+				guruId: kelas.guruId,
+				namaGuru: guru.namaGuru
+			})
+			.from(kelas)
+			.leftJoin(guru, eq(kelas.guruId, guru.id))
+			.where(like(kelas.namaKelas, `%${q}%`))
+			.orderBy(
+				sortDir === 'desc'
+					? desc(kelas.namaKelas)
+					: asc(kelas.namaKelas)
+			)
+			.limit(limit)
+			.offset((page - 1) * limit)
 
-    const rows = await db
-      .select({
-        id: kelas.id,
-        namaKelas: kelas.namaKelas
-      })
-      .from(kelas)
-      .where(conditions)
-      .orderBy(
-        sortDir === 'desc'
-          ? desc(kelas.namaKelas)
-          : asc(kelas.namaKelas)
-      )
-      .limit(limit)
-      .offset((page - 1) * limit);
+	: await db
+			.select({
+				id: kelas.id,
+				namaKelas: kelas.namaKelas,
+				guruId: kelas.guruId,
+				namaGuru: guru.namaGuru
+			})
+			.from(kelas)
+			.leftJoin(guru, eq(kelas.guruId, guru.id))
+			.orderBy(
+				sortDir === 'desc'
+					? desc(kelas.namaKelas)
+					: asc(kelas.namaKelas)
+			)
+			.limit(limit)
+			.offset((page - 1) * limit);
 
-    const totalResult = await db
-      .select({
-        total: count()
-      })
-      .from(kelas)
-      .where(conditions);
+		const total = await db
+			.select({
+				total: count()
+			})
+			.from(kelas);
 
-    const total = totalResult[0]?.total ?? 0;
+		res.json({
+			rows,
+			count: total[0]?.total ?? 0,
+			page,
+			limit
+		});
 
-    return res.json({
-      rows,
-      count: total,
-      page,
-      limit
-    });
-
-  } catch (err) {
-    return next(err);
-  }
+	} catch (err) {
+		next(err);
+	}
 }
 
+/* ===========================
+   GET BY ID
+=========================== */
+
+export async function getKelasById(
+	req: Request,
+	res: Response,
+	next: NextFunction
+) {
+	try {
+		const id = Number(req.params.id);
+
+		const data = await db
+			.select({
+				id: kelas.id,
+				namaKelas: kelas.namaKelas,
+				guruId: kelas.guruId,
+				namaGuru: guru.namaGuru
+			})
+			.from(kelas)
+			.leftJoin(guru, eq(kelas.guruId, guru.id))
+			.where(eq(kelas.id, id));
+
+		if (data.length === 0) {
+			return res.status(404).json({
+				message: 'Data tidak ditemukan'
+			});
+		}
+
+		res.json(data[0]);
+
+	} catch (err) {
+		next(err);
+	}
+}
+
+/* ===========================
+   CREATE
+=========================== */
 
 export async function createKelas(
-  req: Request,
-  res: Response,
-  next: NextFunction
+	req: Request,
+	res: Response,
+	next: NextFunction
 ) {
-  try {
-    const { namaKelas } = req.body;
+	try {
+		const {
+			namaKelas,
+			guruId
+		} = req.body;
 
-    if (!namaKelas) {
-      return res.status(400).json({
-        message: 'Nama Kelas wajib diisi'
-      });
-    }
+		await db.insert(kelas).values({
+			namaKelas,
+			guruId
+		});
 
-    await db.insert(kelas).values({
-      namaKelas
-    });
+		res.status(201).json({
+			message: 'Berhasil ditambahkan'
+		});
 
-    return res.status(201).json({
-      message: 'Data kelas berhasil disimpan'
-    });
-
-  } catch (err) {
-    return next(err);
-  }
+	} catch (err) {
+		next(err);
+	}
 }
 
+/* ===========================
+   UPDATE
+=========================== */
 
 export async function updateKelas(
-  req: Request,
-  res: Response,
-  next: NextFunction
+	req: Request,
+	res: Response,
+	next: NextFunction
 ) {
-  try {
-    const id = Number(req.params.id);
+	try {
+		const id = Number(req.params.id);
 
-    const { namaKelas } = req.body;
+		const {
+			namaKelas,
+			guruId
+		} = req.body;
 
-    if (!namaKelas) {
-      return res.status(400).json({
-        message: 'Nama Kelas wajib diisi'
-      });
-    }
+		await db
+			.update(kelas)
+			.set({
+				namaKelas,
+				guruId
+			})
+			.where(eq(kelas.id, id));
 
-    await db
-      .update(kelas)
-      .set({
-        namaKelas
-      })
-      .where(eq(kelas.id, id));
+		res.json({
+			message: 'Berhasil diperbarui'
+		});
 
-    return res.json({
-      message: 'Data kelas berhasil diperbarui'
-    });
-
-  } catch (err) {
-    return next(err);
-  }
+	} catch (err) {
+		next(err);
+	}
 }
 
+/* ===========================
+   DELETE
+=========================== */
+
 export async function deleteKelas(
-  req: Request,
-  res: Response,
-  next: NextFunction
+	req: Request,
+	res: Response,
+	next: NextFunction
 ) {
-  try {
-    const id = Number(req.params.id);
+	try {
+		const id = Number(req.params.id);
 
-    await db
-      .delete(kelas)
-      .where(eq(kelas.id, id));
+		await db
+			.delete(kelas)
+			.where(eq(kelas.id, id));
 
-    return res.json({
-      message: 'Data kelas berhasil dihapus'
-    });
+		res.json({
+			message: 'Berhasil dihapus'
+		});
 
-  } catch (err) {
-    return next(err);
-  }
+	} catch (err) {
+		next(err);
+	}
 }

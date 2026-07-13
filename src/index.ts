@@ -1,7 +1,7 @@
 
 import express from 'express';
 import { sql } from 'drizzle-orm';
-// import cors from 'cors';
+import cors from 'cors';
 
 import { db } from './db/index.js';
 import guruRoutes from './routes/guruRoutes.js';
@@ -13,7 +13,7 @@ import { errorHandler } from './middlewares/errorHandler.js';
 const app = express();
 
 app.use(express.json());
-// app.use(cors());
+app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/health', async (_req, res) => {
