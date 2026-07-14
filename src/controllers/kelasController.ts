@@ -11,10 +11,9 @@ import {
 import { db } from '../db/index.js';
 import { kelas } from '../db/kelas.js';
 import { guru } from '../db/guru.js';
+import { siswa } from '../db/siswa.js';
+import { sql } from 'drizzle-orm';
 
-/* ===========================
-   GET ALL
-=========================== */
 
 export async function getAllKelas(
 	req: Request,
@@ -33,11 +32,19 @@ export async function getAllKelas(
 				id: kelas.id,
 				namaKelas: kelas.namaKelas,
 				guruId: kelas.guruId,
-				namaGuru: guru.namaGuru
+				namaGuru: guru.namaGuru,
+				jumlahSiswa: sql<number>`COUNT(${siswa.id})`
 			})
 			.from(kelas)
 			.leftJoin(guru, eq(kelas.guruId, guru.id))
+			.leftJoin(siswa,eq(kelas.id, siswa.kelasId))
 			.where(like(kelas.namaKelas, `%${q}%`))
+			.groupBy(
+				kelas.id,
+				kelas.namaKelas,
+				kelas.guruId,
+				guru.namaGuru
+			)
 			.orderBy(
 				sortDir === 'desc'
 					? desc(kelas.namaKelas)
@@ -51,10 +58,18 @@ export async function getAllKelas(
 				id: kelas.id,
 				namaKelas: kelas.namaKelas,
 				guruId: kelas.guruId,
-				namaGuru: guru.namaGuru
+				namaGuru: guru.namaGuru,
+				jumlahSiswa: sql<number>`COUNT(${siswa.id})`
 			})
 			.from(kelas)
 			.leftJoin(guru, eq(kelas.guruId, guru.id))
+			.leftJoin(siswa, eq(kelas.id, siswa.kelasId))
+			.groupBy(
+				kelas.id,
+				kelas.namaKelas,
+				kelas.guruId,
+				guru.namaGuru
+			)
 			.orderBy(
 				sortDir === 'desc'
 					? desc(kelas.namaKelas)
@@ -80,10 +95,6 @@ export async function getAllKelas(
 		next(err);
 	}
 }
-
-/* ===========================
-   GET BY ID
-=========================== */
 
 export async function getKelasById(
 	req: Request,
