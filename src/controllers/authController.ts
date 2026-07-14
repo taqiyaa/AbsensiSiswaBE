@@ -115,9 +115,14 @@ export async function login(
 
     return res.json({
       message: 'Login berhasil',
-      token
+      token,
+      guru: {
+        id: dataGuru.id,
+        namaGuru: dataGuru.namaGuru,
+        email: dataGuru.email
+      }
     });
-
+    
   } catch (error) {
     console.error(error);
     return res.status(500).json({

@@ -71,6 +71,34 @@ export async function getAllSiswa(
   }
 }
 
+export async function getSiswaByKelas(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+
+    const kelasId = Number(req.params.id);
+
+    const rows = await db
+      .select({
+        id: siswa.id,
+        namaSiswa: siswa.namaSiswa,
+        nisSiswa: siswa.nisSiswa,
+        jenisKelamin: siswa.jenisKelamin,
+        kelasId: siswa.kelasId
+      })
+      .from(siswa)
+      .where(eq(siswa.kelasId, kelasId));
+
+    return res.json({
+      rows
+    });
+
+  } catch (err) {
+    next(err);
+  }
+}
 
 export async function createSiswa(
   req: Request,

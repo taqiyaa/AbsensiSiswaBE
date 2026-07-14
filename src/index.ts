@@ -1,4 +1,3 @@
-
 import express from 'express';
 import { sql } from 'drizzle-orm';
 // import {cors} from '$node_modules/cors';
@@ -11,11 +10,13 @@ import siswaRoutes from './routes/siswaRoutes.js';
 import absensiRoutes from './routes/absensiRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import { errorHandler } from './middlewares/errorHandler.js';
+import dashboardRoute from "./routes/dashboardRoutes.js";
 const app = express();
 
 app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
+app.use("/dashboard", dashboardRoute);
 
 app.get('/health', async (_req, res) => {
   try {

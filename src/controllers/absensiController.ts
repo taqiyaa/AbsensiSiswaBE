@@ -25,27 +25,45 @@ export async function getAllAbsensi(
   try {
     const page = Number(req.query.page ?? 1);
     const limit = Number(req.query.limit ?? 10);
+    const q = String(req.query.q ?? '');
+    const sortDir = String(req.query.sortDir ?? 'asc').toLowerCase();
 
-    // Mengambil data unik berdasarkan Tanggal dan Kelas saja
+    const conditions = q
+      ? like(absensi.status, `%${q}%`)
+      : undefined;
+
     const rows = await db
       .select({
+        id: absensi.id,
+        siswaId: absensi.siswaId,
+        guruId: absensi.guruId,
         tanggal: absensi.tanggal,
-        nama_kelas: kelas.namaKelas
+        status: absensi.status,
+        // Menggunakan namaSiswa sesuai properti skema Drizzle Anda
+        nama_siswa: siswa.namaSiswa,
+        // Menarik nama kelas (ganti menjadi kelas.namaKelas jika di skema kelas Anda memakai namaKelas)
+        nama_kelas: kelas.namaKelas 
       })
       .from(absensi)
+      // Melakukan JOIN dari tabel absensi ke tabel siswa
       .leftJoin(siswa, eq(absensi.siswaId, siswa.id))
+      // Melakukan JOIN dari tabel siswa ke tabel kelas
       .leftJoin(kelas, eq(siswa.kelasId, kelas.id))
-      .groupBy(absensi.tanggal, kelas.namaKelas) // Dikelompokkan agar tidak duplikat
-      .orderBy(desc(absensi.tanggal))
+      .where(conditions)
+      .orderBy(
+        sortDir === 'desc'
+          ? desc(absensi.tanggal)
+          : asc(absensi.tanggal)
+      )
       .limit(limit)
       .offset((page - 1) * limit);
 
-    // Hitung total grup riwayat yang ada
     const totalResult = await db
       .select({
         total: count()
       })
-      .from(absensi);
+      .from(absensi)
+      .where(conditions);
 
     const total = totalResult[0]?.total ?? 0;
 
