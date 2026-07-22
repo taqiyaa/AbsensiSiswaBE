@@ -128,10 +128,6 @@ export async function getKelasById(
 	}
 }
 
-/* ===========================
-   CREATE
-=========================== */
-
 export async function createKelas(
 	req: Request,
 	res: Response,
@@ -156,10 +152,6 @@ export async function createKelas(
 		next(err);
 	}
 }
-
-/* ===========================
-   UPDATE
-=========================== */
 
 export async function updateKelas(
 	req: Request,
@@ -190,10 +182,6 @@ export async function updateKelas(
 		next(err);
 	}
 }
-
-/* ===========================
-   DELETE
-=========================== */
 
 export async function deleteKelas(
 	req: Request,

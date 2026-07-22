@@ -13,7 +13,7 @@ const router = Router();
 
 router.get('/', authenticateToken, getAllAbsensi);
 router.post('/',authenticateToken, createAbsensi);
-router.put('/',authenticateToken, updateAbsensi);
-router.delete('/',authenticateToken, deleteAbsensi);
+router.put('/:id',authenticateToken, updateAbsensi);
+router.delete('/:id',authenticateToken, deleteAbsensi);
 
 export default router;

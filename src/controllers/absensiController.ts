@@ -39,15 +39,11 @@ export async function getAllAbsensi(
         guruId: absensi.guruId,
         tanggal: absensi.tanggal,
         status: absensi.status,
-        // Menggunakan namaSiswa sesuai properti skema Drizzle Anda
         nama_siswa: siswa.namaSiswa,
-        // Menarik nama kelas (ganti menjadi kelas.namaKelas jika di skema kelas Anda memakai namaKelas)
         nama_kelas: kelas.namaKelas 
       })
       .from(absensi)
-      // Melakukan JOIN dari tabel absensi ke tabel siswa
       .leftJoin(siswa, eq(absensi.siswaId, siswa.id))
-      // Melakukan JOIN dari tabel siswa ke tabel kelas
       .leftJoin(kelas, eq(siswa.kelasId, kelas.id))
       .where(conditions)
       .orderBy(
@@ -92,7 +88,6 @@ export async function createAbsensi(
       status
     } = req.body;
 
-    // Memberikan fallback nilai guruId jika tidak dikirim dari Svelte frontend Anda
     const finalGuruId = guruId ?? 1;
 
     if (
