@@ -16,7 +16,6 @@ import { db } from '../db/index.js';
 import { siswa } from '../db/siswa.js';
 import { absensi } from '../db/absensi.js';
 
-
 export async function getAllSiswa(
   req: Request,
   res: Response,

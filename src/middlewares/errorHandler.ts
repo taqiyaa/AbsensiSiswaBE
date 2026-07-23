@@ -12,7 +12,6 @@ export function errorHandler(
 ) {
   console.error(err);
 
-  // Foreign Key Error
   if (err?.cause?.code === 'ER_NO_REFERENCED_ROW_2') {
     return res.status(400).json({
       success: false,
@@ -21,7 +20,6 @@ export function errorHandler(
     });
   }
 
-  // Duplicate Entry
   if (err?.cause?.code === 'ER_DUP_ENTRY') {
     return res.status(400).json({
       success: false,
@@ -30,7 +28,6 @@ export function errorHandler(
     });
   }
 
-  // Data terlalu panjang
   if (err?.cause?.code === 'ER_DATA_TOO_LONG') {
     return res.status(400).json({
       success: false,
@@ -39,7 +36,7 @@ export function errorHandler(
     });
   }
 
-  // Kolom wajib
+
   if (err?.cause?.code === 'ER_BAD_NULL_ERROR') {
     return res.status(400).json({
       success: false,
@@ -48,7 +45,6 @@ export function errorHandler(
     });
   }
 
-  // Default
   return res.status(500).json({
     success: false,
     message: 'Internal Server Error',

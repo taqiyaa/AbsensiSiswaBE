@@ -9,7 +9,8 @@ import {
   desc,
   like,
   count,
-  eq
+  eq,
+  and
 } from 'drizzle-orm';
 
 import { db } from '../db/index.js';
@@ -84,6 +85,7 @@ export async function getRiwayatAbsensi(
     const rows = await db
       .selectDistinct({
         tanggal: absensi.tanggal,
+        kelasId: siswa.kelasId,
         namaKelas: kelas.namaKelas
       })
       .from(absensi)
@@ -94,8 +96,66 @@ export async function getRiwayatAbsensi(
     const result = rows.map((item, index) => ({
       id: index + 1,
       tanggal: item.tanggal,
+      kelasId: item.kelasId,
       nama_kelas: item.namaKelas
     }));
+
+    return res.json({
+      rows: result
+    });
+
+  } catch (err) {
+    return next(err);
+  }
+}
+
+export async function getAbsensiByKelasTanggal(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const kelasId = Number(req.params.kelasId);
+    const tanggal = String(req.params.tanggal);
+
+    if (!kelasId || !tanggal) {
+      return res.status(400).json({
+        message: 'Kelas dan tanggal wajib diisi'
+      });
+    }
+
+    const rows = await db
+      .select({
+        id: absensi.id,
+        siswaId: absensi.siswaId,
+        guruId: absensi.guruId,
+        tanggal: absensi.tanggal,
+        status: absensi.status,
+        namaSiswa: siswa.namaSiswa,
+        nisSiswa: siswa.nisSiswa,
+        kelasId: siswa.kelasId,
+        namaKelas: kelas.namaKelas
+      })
+      .from(absensi)
+      .leftJoin(
+        siswa,
+        eq(absensi.siswaId, siswa.id)
+      )
+      .leftJoin(
+        kelas,
+        eq(siswa.kelasId, kelas.id)
+      )
+      .where(
+        eq(siswa.kelasId, kelasId)
+      );
+
+    const result = rows.filter((item) => {
+      const tanggalDb = new Date(item.tanggal)
+        .toISOString()
+        .substring(0, 10);
+
+      return tanggalDb === tanggal;
+    });
 
     return res.json({
       rows: result
