@@ -124,25 +124,34 @@ export async function updateGuru(
       email
     } = req.body;
 
-    if (!namaGuru || !npmGuru || !password || !email) {
+    if (!namaGuru || !npmGuru || !email) {
       return res.status(400).json({
-        message: 'Nama Guru, NPM Guru, Password, dan Email wajib diisi'
+        message: 'Nama Guru, NPM Guru, dan Email wajib diisi'
       });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const dataUpdate: {
+      namaGuru: string;
+      npmGuru: string;
+      email: string;
+      password?: string;
+    } = {
+      namaGuru,
+      npmGuru,
+      email
+    };
+
+    if(password) {
+      dataUpdate.password = await bcrypt.hash(password,10);
+    }
+
     await db
       .update(guru)
-      .set({
-        namaGuru,
-        npmGuru,
-        password: hashedPassword,
-        email
-      })
+      .set(dataUpdate)
       .where(eq(guru.id, id));
 
     return res.json({
-      message: 'Data guru berhasil diperbarui'
+      message: 'Data guru berhasil di perbarui.'
     });
 
   } catch (err) {

@@ -75,6 +75,37 @@ export async function getAllAbsensi(
   }
 }
 
+export async function getRiwayatAbsensi(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const rows = await db
+      .selectDistinct({
+        tanggal: absensi.tanggal,
+        namaKelas: kelas.namaKelas
+      })
+      .from(absensi)
+      .leftJoin(siswa, eq(absensi.siswaId, siswa.id))
+      .leftJoin(kelas, eq(siswa.kelasId, kelas.id))
+      .orderBy(desc(absensi.tanggal));
+
+    const result = rows.map((item, index) => ({
+      id: index + 1,
+      tanggal: item.tanggal,
+      nama_kelas: item.namaKelas
+    }));
+
+    return res.json({
+      rows: result
+    });
+
+  } catch (err) {
+    return next(err);
+  }
+}
+
 export async function createAbsensi(
   req: Request,
   res: Response,
